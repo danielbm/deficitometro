@@ -1,0 +1,513 @@
+<!-- Este site foi feito em um dia, sem nenhum apreço pelas boas práticas de programação. Favor não me julgar. -->
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <script src="https://www.gstatic.com/firebasejs/5.7.3/firebase.js"></script>
+        <script>
+            // Initialize Firebase
+            var config = {
+                apiKey: "AIzaSyDL1Kn447gfAlcb-rfdOSZJ0HgZaLJxLyI",
+                authDomain: "deficitometro.firebaseapp.com",
+                databaseURL: "https://deficitometro.firebaseio.com",
+                projectId: "deficitometro",
+                storageBucket: "",
+                messagingSenderId: "556458278908"
+            };
+            firebase.initializeApp(config);
+        </script>
+        <script type="text/javascript">
+            var _paq = _paq || [];
+            /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+            _paq.push(["setCookieDomain", "*.www.deficitometro.com.br"]);
+            _paq.push(['trackPageView']);
+            _paq.push(['enableLinkTracking']);
+            (function() {
+            var u="https://deficitometro.matomo.cloud/";
+            _paq.push(['setTrackerUrl', u+'piwik.php']);
+            _paq.push(['setSiteId', '1']);
+            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+            g.type='text/javascript'; g.async=true; g.defer=true; g.src='//cdn.matomo.cloud/deficitometro.matomo.cloud/piwik.js'; s.parentNode.insertBefore(g,s);
+            })();
+        </script>
+        <script>
+            var dps = 308000000000/(365*24*60*60)
+
+            var dps_break = [0.20,0.46,0.19,0.15]
+            var beneficiarios = [19760000,9420000,680000,300000]
+
+
+            function formatMoney(n, c, d, t) {
+                var c = isNaN(c = Math.abs(c)) ? 2 : c,
+                    d = d == undefined ? "," : d,
+                    t = t == undefined ? "." : t,
+                    s = n < 0 ? "-" : "",
+                    i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
+                    j = (j = i.length) > 3 ? j % 3 : 0;
+
+                return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+            };
+            function startTime() {
+                today = new Date()/1000;
+                first_day = new Date('2019-01-01T00:00:01')/1000;
+                cur_deficit = (today-first_day)*dps
+
+                document.getElementById('dfct').innerHTML = "R$ "+formatMoney(cur_deficit);
+                document.getElementById('urbano').innerHTML = "R$ "+formatMoney(cur_deficit*dps_break[0]);
+                document.getElementById('rural').innerHTML = "R$ "+formatMoney(cur_deficit*dps_break[1]);
+                document.getElementById('servidores').innerHTML = "R$ "+formatMoney(cur_deficit*dps_break[2]);
+                document.getElementById('militar').innerHTML = "R$ "+formatMoney(cur_deficit*dps_break[3]);
+                document.getElementById('urbanopercapita').innerHTML = "R$ "+formatMoney(cur_deficit*dps_break[0]/beneficiarios[0]);
+                document.getElementById('ruralpercapita').innerHTML = "R$ "+formatMoney(cur_deficit*dps_break[1]/beneficiarios[1]);
+                document.getElementById('servidorespercapita').innerHTML = "R$ "+formatMoney(cur_deficit*dps_break[2]/beneficiarios[2]);
+                document.getElementById('militarpercapita').innerHTML = "R$ "+formatMoney(cur_deficit*dps_break[3]/beneficiarios[3]);
+                document.getElementById('escolas').innerHTML = formatMoney((cur_deficit/2523600).toFixed(2),0);
+                document.getElementById('hospitais').innerHTML = formatMoney((cur_deficit/1424792).toFixed(2),0);
+                document.getElementById('saneamento').innerHTML = formatMoney((cur_deficit/15000000000).toFixed(2));
+                document.getElementById('saneamento2').innerHTML = formatMoney((cur_deficit/458000000).toFixed(2));
+                document.getElementById('lavajato').innerHTML = formatMoney((cur_deficit/13000000000).toFixed(2));
+                document.getElementById('policia').innerHTML = formatMoney((cur_deficit/5300000000).toFixed(2));
+                document.getElementById('triplex').innerHTML = formatMoney((cur_deficit/2200000).toFixed(2),0);
+                document.getElementById('queiroz').innerHTML = formatMoney((cur_deficit/1200000).toFixed(2));
+                document.getElementById('ciencia').innerHTML = formatMoney((cur_deficit/7500000000).toFixed(2));
+                document.getElementById('bolsafamilia').innerHTML = formatMoney((cur_deficit/30000000000).toFixed(2));
+                document.getElementById('metro').innerHTML = formatMoney((cur_deficit/1000000000).toFixed(2),0);
+                document.getElementById('copa').innerHTML = formatMoney((cur_deficit/25500000000).toFixed(2));
+                document.getElementById('olimpiadas').innerHTML = formatMoney((cur_deficit/40000000000).toFixed(2));
+                document.getElementById('arrascaeta').innerHTML = formatMoney((cur_deficit/76000000).toFixed(2),0);
+                document.getElementById('megasena').innerHTML = formatMoney((cur_deficit/302500000).toFixed(2),0);
+
+                var t = setTimeout(startTime, 1000);
+            }
+        </script>
+        <style>
+            body {
+                font-size: 2.5vw;
+            }
+            .counter {
+                background: #30748B;
+                border-radius: 4px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+                color: #fff;
+                font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+                margin-bottom: 10px;
+                font-size: 3.5vw;
+            }
+            .counter-inside {
+                margin: 0 1px;
+                padding: 0% .7%;
+                text-align: center;
+                font-weight: bold;
+                font-size: 5vw;
+            }
+
+            .counter-small {
+                margin: 0 1px;
+                padding: 0% .7%;
+                text-align: left;
+                background-color: #34A358;
+                font-size: 2.5vw;
+            }
+
+            .percapita {
+                background-color: #30748B;
+            }
+
+            .title {
+                font-size: 6vw;
+                font-family: "Impact";
+                color: #fff;
+                background-color: #34A358;
+                border-radius: 4px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+            .info {
+                background-color: rgb(243, 243, 243);
+                border-radius: 4px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+                padding: 0% .7%;
+                margin-bottom: 10px;
+            }
+            .refs {
+                background-color: rgb(243, 243, 243);
+                border-radius: 4px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+                font-size: 2vw;
+                list-style-position:inside;
+                padding: 0% .7%;
+                word-break: break-all;
+            }
+
+            .refs ol {
+                padding: 0% .7%;
+            }
+            .method {
+                background-color: rgb(243, 243, 243);
+                border-radius: 4px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+                font-size: 2vw;
+                padding: 0% .7%;
+                text-align: justify;
+            }
+            .equips {
+                display: flex;
+            }
+
+            .equip-column {
+                flex: 1;
+            }
+
+            .equip-item {
+                display: flex;
+                align-items: center;
+            }
+            .equip-item i {
+                flex: 1;
+                text-align: center;
+            }
+            .equip-text {
+                flex: 6;
+            }
+
+            .equip-text span {
+                color: #34A358;
+            }
+
+            .dfct-row {
+                display: flex;
+                align-items: center;
+                margin: 1% 0%;
+            }
+
+            .dfct-row i {
+                flex: 1;
+                text-align: center;
+            }
+
+            .dfct-text {
+                flex: 6;
+            }
+
+            .dfct-column {
+                flex: 1;
+            }
+
+            .chart {
+                background-color: rgb(255, 255, 255);
+                border-radius: 4px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+                margin-bottom: 10px;
+                padding: 0% .7%;
+                font-size: 2.5vw;
+            }
+
+            .chart img {
+                max-width: 100%;
+                height: auto;
+            }
+
+        </style>
+    </head>
+    <body onload="startTime()">
+        <div class="container-fluid">
+            <div class="row" >
+                <div class="col-md-1"></div>
+                <div class="col-md-10 text-center">
+                    <p class="title"> DEFICITÔMETRO </p>
+                    <div class="counter">
+                        <p>
+                            Déficit da Previdência em 2019 até agora: <br />
+                        </p>
+                        <p id="dfct" class="counter-inside"></p>
+                    </div>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <div class="info">
+                        <p class="text-left">
+                            Este valor equivale a: <br />
+                        </p>
+                        <div class="equips">
+                            <div class="equip-column">
+                                <div class="equip-item">
+                                    <i class="fas fa-school"></i>
+                                    <div class="equip-text">
+                                            <span id="escolas"></span> escolas
+                                    </div>
+                                </div>
+                                <div class="equip-item">
+                                    <i class="fas fa-hospital"></i>
+                                    <div class="equip-text">
+                                            <span id="hospitais"></span> Unidades Básicas de Saúde
+                                    </div>
+                                </div>
+                                <div class="equip-item">
+                                    <i class="fas fa-toilet"></i>
+                                    <div class="equip-text">
+                                            <span id="saneamento"></span> vezes o investimento anual necessário para universalizar o saneamento básico.
+                                    </div>
+                                </div>
+                                <div class="equip-item">
+                                    <i class="fas fa-poo"></i>
+                                    <div class="equip-text">
+                                            <span id="saneamento2"></span> vezes o orçamento anual previsto para saneamento básico.
+                                    </div>
+                                </div>
+                                <div class="equip-item">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    <div class="equip-text">
+                                            <span id="lavajato"></span> vezes o valor recuperado pela Lava-Jato
+                                    </div>
+                                </div>
+                                <div class="equip-item">
+                                    <i class="fas fa-user-ninja"></i>
+                                    <div class="equip-text">
+                                        <span id="policia"></span> vezes o orçamento anual da Polícia Federal
+                                    </div>
+                                </div>
+                                <div class="equip-item">
+                                    <i class="fas fa-building"></i>
+                                    <div class="equip-text">
+                                            <span id="triplex"></span> triplex no Guarujá
+                                    </div>
+                                </div>
+                                <div class="equip-item">
+                                    <i class="fas fa-car"></i>
+                                    <div class="equip-text">
+                                        <span id="queiroz"></span> vezes o valor movimentado por Fabrício Queiroz
+                                    </div>
+                                </div>
+                                <div class="equip-item">
+                                    <i class="fas fa-flask"></i>
+                                    <div class="equip-text">
+                                        <span id="ciencia"></span> vezes o orçamento anual para Ciência e Tecnologia
+                                    </div>
+                                </div>
+                                <div class="equip-item">
+                                    <i class="fas fa-heart"></i>
+                                    <div class="equip-text">
+                                        <span id="bolsafamilia"></span> vezes o orçamento anual do Bolsa Família
+                                    </div>
+                                </div>
+                                <div class="equip-item">
+                                    <i class="fas fa-subway"></i>
+                                    <div class="equip-text">
+                                        <span id="metro"></span> quilômetros de metrô
+                                    </div>
+                                </div>
+                                <div class="equip-item">
+                                    <i class="fas fa-futbol"></i>
+                                    <div class="equip-text">
+                                        <span id="copa"></span> vezes o gasto com a Copa de 2014
+                                    </div>
+                                </div>
+                                <div class="equip-item">
+                                    <i class="fas fa-running"></i>
+                                    <div class="equip-text">
+                                        <span id="olimpiadas"></span> vezes o gasto com as Olimpíadas do Rio
+                                    </div>
+                                </div>
+                                <div class="equip-item">
+                                    <i class="fas fa-exchange-alt"></i>
+                                    <div class="equip-text">
+                                        <span id="arrascaeta"></span> Arrascaetas
+                                    </div>
+                                </div>
+                                <div class="equip-item">
+                                    <i class="fas fa-trophy"></i>
+                                    <div class="equip-text">
+                                        <span id="megasena"></span> acertos na Mega-sena da virada
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+            <div class="row" >
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <div class="counter">
+                        <div class="counter-small">
+                            <div>
+                                <p>Déficit acumulado segmentado por setor: </p>
+                            </div>
+                            <div class="dfct-column">
+                                <div class="dfct-row">
+                                    <i class="fas fa-city"></i>
+                                    <div class="dfct-text">
+                                        Trabalhadores urbanos:
+                                        <span id="urbano"></span>
+                                    </div>
+                                </div>
+                                <div class="dfct-row">
+                                    <i class="fas fa-tree"></i>
+                                    <div class="dfct-text">
+                                        Trabalhadores rurais:
+                                        <span id="rural"></span>
+                                    </div>
+                                </div>
+
+                                <div class="dfct-row">
+                                    <i class="fas fa-stamp"></i>
+                                    <div class="dfct-text">
+                                        Servidores públicos:
+                                        <span id="servidores"></span>
+                                    </div>
+                                </div>
+                                <div class="dfct-row">
+                                    <i class="fas fa-fighter-jet"></i>
+                                    <div class="dfct-text">
+                                        Militares: <span id="militar"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+            <div class="row" >
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <div class="counter">
+                        <div class="counter-small percapita">
+                            <div>
+                                <p>Déficit acumulado segmentado por setor, por beneficiado: </p>
+                            </div>
+                            <div class="dfct-column">
+                                <div class="dfct-row">
+                                    <i class="fas fa-city"></i>
+                                    <div class="dfct-text">
+                                        Trabalhadores urbanos:
+                                        <span id="urbanopercapita"></span> <br />
+                                        19,7 milhões de beneficiados
+                                    </div>
+                                </div>
+                                <div class="dfct-row">
+                                    <i class="fas fa-tree"></i>
+                                    <div class="dfct-text">
+                                        Trabalhadores rurais:
+                                        <span id="ruralpercapita"></span> <br />
+                                        9,4 milhões de beneficiados
+                                    </div>
+                                </div>
+                                <div class="dfct-row">
+                                    <i class="fas fa-stamp"></i>
+                                    <div class="dfct-text">
+                                        Servidores públicos:
+                                        <span id="servidorespercapita"></span> <br />
+                                        680 mil beneficiados
+                                    </div>
+                                </div>
+                                <div class="dfct-row">
+                                    <i class="fas fa-fighter-jet"></i>
+                                    <div class="dfct-text">
+                                        Militares:
+                                        <span id="militarpercapita"></span> <br />
+                                        300 mil beneficiados
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+            <div class="row" >
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <div class="info">
+                        <p> Expectativa de vida após os 60 anos, por região: </p>
+                        <ul>
+                            <li>Centro-oeste: 21,47</li>
+                            <li>Nordeste: 20,85</li>
+                            <li>Norte: 20,22</li>
+                            <li>Sudeste: 22,56</li>
+                            <li>Sul: 22,57</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+            <div class="row" >
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <div class="text-center chart">
+                        <p> Despesa previdenciária versus idade da população em 86 países:</p>
+                        <img class="img-fluid" src="prevvsidade.PNG" />
+                    </div>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+            <div class="row" >
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <div class="text-center chart">
+                        <img class="img-fluid" src="media.png" />
+                    </div>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+            <div class="row" >
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <div class="text-center chart">
+                        <p> Países sem idade mínima para aposentadoria: </p>
+                        <img class="img-fluid" src="minimum.png" />
+                    </div>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+            <div class="row" >
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <div class="refs">
+                        <p> Referências: </p>
+                        <ol>
+                            <li><a href="http://www.camara.leg.br/internet/comissao/index/mista/orca/orcamento/OR2019/proposta/MensagemPres.pdf">http://www.camara.leg.br/internet/comissao/index/mista/orca/orcamento/OR2019/proposta/MensagemPres.pdf</a></li>
+                            <li><a href="http://www2.senado.leg.br/bdsf/bitstream/handle/id/529485/RAF_2_Box.pdf">http://www2.senado.leg.br/bdsf/bitstream/handle/id/529485/RAF_2_Box.pdf</a></li>
+                            <li><a href="http://downloads.fipe.org.br/content/downloads/publicacoes/bif/bif423-11-16a.pdf">http://downloads.fipe.org.br/content/downloads/publicacoes/bif/bif423-11-16a.pdf</a></li>
+                            <li><a href="http://repositorio.ipea.gov.br/bitstream/11058/7271/1/NT_n29_Disoc.pdf">http://repositorio.ipea.gov.br/bitstream/11058/7271/1/NT_n29_Disoc.pdf</a></li>
+                            <li><a href="http://www.fazenda.gov.br/centrais-de-conteudos/apresentacoes/arquivos/2016/apresentacao-manoel-carlos-pires-uma-visao-geral-do-processo-de-reforma.pdf">http://www.fazenda.gov.br/centrais-de-conteudos/apresentacoes/arquivos/2016/apresentacao-manoel-carlos-pires-uma-visao-geral-do-processo-de-reforma.pdf</a></li>
+                            <li><a href="http://www2.senado.leg.br/bdsf/bitstream/handle/id/518439/Textos_para_discussao_190.pdf?sequence=1">http://www2.senado.leg.br/bdsf/bitstream/handle/id/518439/Textos_para_discussao_190.pdf?sequence=1</a></li>
+                            <li><a href="http://www.fumec.br/revistas/eol/article/download/3862/2133">http://www.fumec.br/revistas/eol/article/download/3862/2133</a></li>
+                            <li><a href="https://app.uff.br/riuff/handle/1/5073">https://app.uff.br/riuff/handle/1/5073</a></li>
+                            <li><a href="http://www.tratabrasil.org.br/uploads/estudo-investimentos-em-saneamento-com-recursos-do-fgts.pdf">http://www.tratabrasil.org.br/uploads/estudo-investimentos-em-saneamento-com-recursos-do-fgts.pdf</a></li>
+                            <li><a href="https://g1.globo.com/economia/noticia/2018/09/16/previdencia-consumira-em-2019-tres-vezes-mais-recursos-que-saude-educacao-e-seguranca-juntos-preve-governo.ghtml">https://g1.globo.com/economia/noticia/2018/09/16/previdencia-consumira-em-2019-tres-vezes-mais-recursos-que-saude-educacao-e-seguranca-juntos-preve-governo.ghtml</a></li>
+                            <li><a href="https://www.bbc.com/portuguese/brasil-43432053">https://www.bbc.com/portuguese/brasil-43432053</a></li>
+                            <li><a href="https://g1.globo.com/pr/parana/noticia/triplex-no-guaruja-atribuido-pelo-mpf-ao-ex-presidente-lula-foi-avaliado-em-r-22-milhoes.ghtml">https://g1.globo.com/pr/parana/noticia/triplex-no-guaruja-atribuido-pelo-mpf-ao-ex-presidente-lula-foi-avaliado-em-r-22-milhoes.ghtml</a></li>
+                            <li><a href="https://www.valor.com.br/politica/6039361/fabricio-queiroz-diz-que-movimentacao-atipica-vem-de-revenda-de-carros">https://www.valor.com.br/politica/6039361/fabricio-queiroz-diz-que-movimentacao-atipica-vem-de-revenda-de-carros</a></li>
+                            <li><a href="https://portogente.com.br/noticias/dia-a-dia/87157-qual-e-o-custo-dos-metros">https://portogente.com.br/noticias/dia-a-dia/87157-qual-e-o-custo-dos-metros</a></li>
+                            <li><a href="http://agenciabrasil.ebc.com.br/geral/noticia/2014-12/tcu-contabiliza-r-255-bilhoes-de-gastos-com-copa-do-mundo">http://agenciabrasil.ebc.com.br/geral/noticia/2014-12/tcu-contabiliza-r-255-bilhoes-de-gastos-com-copa-do-mundo</a></li>
+                            <li><a href="https://globoesporte.globo.com/olimpiadas/noticia/custo-dos-jogos-olimpicos-do-rio-e-atualizado-e-chega-a-r-41-bilhoes.ghtml">https://globoesporte.globo.com/olimpiadas/noticia/custo-dos-jogos-olimpicos-do-rio-e-atualizado-e-chega-a-r-41-bilhoes.ghtml</a></li>
+                            <li><a href="https://globoesporte.globo.com/futebol/times/cruzeiro/noticia/alem-de-recorde-no-mercado-brasileiro-venda-de-arrascaeta-e-a-maior-da-historia-do-cruzeiro.ghtml">https://globoesporte.globo.com/futebol/times/cruzeiro/noticia/alem-de-recorde-no-mercado-brasileiro-venda-de-arrascaeta-e-a-maior-da-historia-do-cruzeiro.ghtml</a></li>
+                            <li><a href="https://g1.globo.com/loterias/ao-vivo/sorteio-mega-sena-da-virada-2018.ghtml">https://g1.globo.com/loterias/ao-vivo/sorteio-mega-sena-da-virada-2018.ghtml</a></li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+            <div class="row" >
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <div class="method">
+                        <p> Metodologia: </p>
+                        <p> O déficit calculado é o valor do déficit estimado na LOA [1], proporcional ao número de segundos transcorridos. Já a segmentação é proporcional aos valores do relatório do IFI [2]. O restante dos valores advém das referências [3] a [18] </p>
+                    </div>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+        </div>
+    </body>
+</html>
